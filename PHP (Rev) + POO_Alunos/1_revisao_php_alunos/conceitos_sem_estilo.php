@@ -2,8 +2,36 @@
 // Inicia a sessão PHP para permitir o armazenamento de dados entre páginas através de cookies
 session_start();
 
+// _______________________________________________________________________________________
+// Conexão com o banco de dados mysql (Nome do BD: sistema_simples)   
 
-// 1º Digitação da lógica em PHP (Aqui)
+// Define as variaveis de configuração para conexão com o banco de dados MySQL
+$host = "localhost"; // Endereço do servidor de banco dedados MySQL
+$usuario = "root"; // Nome de usuário do MySQL
+$senha = "Senai@118"; // Senha do usuário do MySQL
+$banco = "sistema_simples"; // Nome do banco de dados a ser utilizado
+
+//  função que estabilece conexão com o banco de dados e retorna o objeto de conexão
+function conectorBD() {
+    // indica que serão usadas as variáveis globais definidas anteriormente
+    global $host, $usuario, $senha, $banco;
+    // criar um novo objeto de conexão MySQLi com os parâmetros fornecidos
+    $conexao = new mysqli($host, $usuario, $senha, $banco);
+
+    // Verifica se houve erro na conexão
+    if ($conexao->connect_error) {
+        // Se houver erro, interrompe a execução e exibe a mensagem de erro 
+        die("Falha na conexão: " . $conexao->connect_error);
+    }
+
+    // Retorna o objeto de conexão para se ultilizado nas operações de banco de dados 
+    return $conexao;
+}
+
+// _______________________________________________________________________________
+// Vlidação e inicialização de variáveis
+
+// Função que valida se um campo de formulário não está vazio
 
 
 ?>
