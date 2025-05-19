@@ -7,6 +7,14 @@
 
 
 // 1ª Digitação (Aqui)
+function comer($comida) {
+    return ($comida > 0) ? $comida - 1 : 0;
+}
+
+function dormir($sono) {
+    return true;
+}
+
 
 
 // Criando vários cachorros
@@ -24,7 +32,12 @@ $cachorros = [
 
 
 // 2ª Digitação (Aqui)
-
+foreach ($cachorros as $Key => $cachorro) {
+    $cachorros[$Key]["comida"] = comer($cachorro ["comida"]);
+    if ($cachorro["sono"]) {
+        $cachorros[$Key]["sono"] = dormir($cachorro["sono"]);
+    }
+}
 
 // Exibindo os resultados no navegador
 echo "<!DOCTYPE html>";

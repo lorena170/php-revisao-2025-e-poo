@@ -1,111 +1,101 @@
 <?php
 
-// Classe abstrata Veiculo
+// Classe Abstrata Veiculo
 abstract class Veiculo {
-    protected $modelo;
-    protected $placa;
-    protected $disponivel;
+    protected string $modelo;
+    protected string $placa;
+    protected bool $disponivel;
 
-    public function __construct($modelo, $placa) {
+    public function __construct(string $modelo, string $placa) {
         $this->modelo = $modelo;
         $this->placa = $placa;
         $this->disponivel = true;
     }
 
-    // Método abstrato para calcular o aluguel
-    abstract public function calcularAluguel($dias);
+    abstract public function calcularAluguel(int $dias): float;
 
-    // Verifica se o veículo está disponível para locação
-    public function isDisponivel() {
+    public function isDisponivel(): bool {
         return $this->disponivel;
     }
 
-    // Retorna o modelo do veículo
-    public function getModelo() {
+    public function getModelo(): string {
         return $this->modelo;
     }
 
-    // Realiza o aluguel do veículo
-    public function alugar() {
+    public function alugar(): void {
         if ($this->disponivel) {
             $this->disponivel = false;
-            echo get_class($this) . " '{$this->modelo}' alugado com sucesso!\n";
+            echo get_class($this) . " '{$this->modelo}' alugado com sucesso!<br>";
         } else {
-            echo get_class($this) . " '{$this->modelo}' não está disponível para aluguel.\n";
+            echo get_class($this) . " '{$this->modelo}' não está disponível para aluguel.<br>";
         }
     }
 
-    // Realiza a devolução do veículo
-    public function devolver() {
+    public function devolver(): void {
         $this->disponivel = true;
-        echo get_class($this) . " '{$this->modelo}' devolvido com sucesso!\n";
+        echo get_class($this) . " '{$this->modelo}' devolvido com sucesso!<br>";
     }
 }
 
-// Classe Carro que herda de Veiculo
+# Subclasse Carro
 class Carro extends Veiculo {
-    public function calcularAluguel($dias) {
-        return 100.00 * $dias; // R$100 por dia
+    public function calcularAluguel(int $dias): float {
+        return $dias * 100.00;
     }
 }
-
-// Classe Moto que herda de Veiculo
 class Moto extends Veiculo {
-    public function calcularAluguel($dias) {
-        return 50.00 * $dias; // R$50 por dia
+    public function calcularAluguel(int $dias): float {
+        return $dias * 50.00;
     }
 }
 
-// Classe Locadora que gerencia os veículos
+# Classe Locadora
 class Locadora {
-    private $veiculos = [];
+    private array $veiculos = [];
 
-    // Adiciona um veículo à locadora
-    public function adicionarVeiculo(Veiculo $veiculo) {
-        $this->veiculos[$veiculo->getModelo()] = $veiculo;
-        echo "Veículo '{$veiculo->getModelo()}' adicionado ao acervo.\n";
+    public function adicionarVeiculo(Veiculo $veiculo): void {
+        $this->veiculos[] = $veiculo;
+        echo "Veículo '{$veiculo->getModelo()}' adicionado ao acervo.<br>";
     }
 
-    // Aluga um veículo baseado no modelo
-    public function alugarVeiculo($modelo) {
-        if (isset($this->veiculos[$modelo])) {
-            $this->veiculos[$modelo]->alugar();
-        } else {
-            echo "Veículo '{$modelo}' não encontrado na locadora.\n";
+    public function alugarVeiculo(string $modelo): void {
+        foreach ($this->veiculos as $veiculo) {
+            if ($veiculo->getModelo() === $modelo) {
+                $veiculo->alugar();
+                return;
+            }
         }
+        echo "Veículo '{$modelo}' não encontrado na locadora.<br>";
     }
 
-    // Devolve um veículo baseado no modelo
-    public function devolverVeiculo($modelo) {
-        if (isset($this->veiculos[$modelo])) {
-            $this->veiculos[$modelo]->devolver();
-        } else {
-            echo "Veículo '{$modelo}' não encontrado na locadora.\n";
+    public function devolverVeiculo(string $modelo): void {
+        foreach ($this->veiculos as $veiculo) {
+            if ($veiculo->getModelo() === $modelo) {
+                $veiculo->devolver();
+                return;
+            }
         }
+        echo "Veículo '{$modelo}' não encontrado na locadora.<br>";
     }
 }
 
-// Teste do sistema
+# Testes e Simulação
+// Script Execution
 $locadora = new Locadora();
 
-// Criação de veículos (Carro e Moto)
-$carro = new Carro("HB20", "ABC-1234");
-$moto = new Moto("Yamaha XTZ", "XYZ-5678");
+$carro = new Carro("HB20", "ABC1234");
+$moto = new Moto("Yamaha XTZ", "XYZ5678");
 
-// Adicionando veículos à locadora
 $locadora->adicionarVeiculo($carro);
 $locadora->adicionarVeiculo($moto);
 
-// Realizando o aluguel dos veículos
+echo "<br>";
 $locadora->alugarVeiculo("HB20");
 $locadora->alugarVeiculo("Yamaha XTZ");
 
-// Devolvendo o carro
+echo "<br>";
 $locadora->devolverVeiculo("HB20");
 
-// Calculando e exibindo o valor do aluguel por 3 dias
-$dias = 3;
-echo "\nValor do aluguel do carro por {$dias} dias: R$" . number_format($carro->calcularAluguel($dias), 2, ',', '.') . "\n";
-echo "Valor do aluguel da moto por {$dias} dias: R$" . number_format($moto->calcularAluguel($dias), 2, ',', '.') . "\n";
-
-?>
+echo "<br>";
+echo "Valor do aluguel do carro por 3 dias: R$" . number_format($carro->calcularAluguel(3), 2, ',', '.') . "<br>";
+echo "Valor do aluguel da moto por 3 dias: R$" . number_format($moto->calcularAluguel(3), 2, ',', '.') . "<br>";

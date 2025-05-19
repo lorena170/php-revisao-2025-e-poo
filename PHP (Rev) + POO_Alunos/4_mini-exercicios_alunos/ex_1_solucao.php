@@ -1,111 +1,100 @@
 <?php
 
-// Classe abstrata ItemBiblioteca
+// Abstract class definition in PHP
 abstract class ItemBiblioteca {
-    protected $titulo;
-    protected $codigo;
-    protected $disponivel;
+    protected string $titulo;
+    protected string $codigo;
+    protected bool $disponivel;
 
-    public function __construct($titulo, $codigo) {
+    public function __construct(string $titulo, string $codigo) {
         $this->titulo = $titulo;
         $this->codigo = $codigo;
         $this->disponivel = true;
     }
 
-    // Método abstrato para calcular multa
-    abstract public function calcular_multa($dias_atraso);
+    abstract public function calcularMulta(int $diasAtraso): float;
 
-    // Método para emprestar o item
-    public function emprestar() {
+    public function emprestar(): void {
         if ($this->disponivel) {
             $this->disponivel = false;
-            echo get_class($this) . " '{$this->titulo}' emprestado com sucesso!\n";
+            echo get_class($this) . " '{$this->titulo}' emprestado com sucesso!<br>";
         } else {
-            echo get_class($this) . " '{$this->titulo}' não está disponível para empréstimo.\n";
+            echo get_class($this) . " '{$this->titulo}' não está disponível para empréstimo.<br>";
         }
     }
 
-    // Método para devolver o item
-    public function devolver() {
+    public function devolver(): void {
         $this->disponivel = true;
-        echo get_class($this) . " '{$this->titulo}' devolvido com sucesso!\n";
+        echo get_class($this) . " '{$this->titulo}' devolvido com sucesso!<br>";
     }
 
-    // Método para verificar se o item está disponível
-    public function esta_disponivel() {
+    public function isDisponivel(): bool {
         return $this->disponivel;
     }
 
-    // Método para retornar o título do item
-    public function titulo() {
+    public function getTitulo(): string {
         return $this->titulo;
     }
 }
 
-// Classe Livro que herda de ItemBiblioteca
+# Subclasse Livro
 class Livro extends ItemBiblioteca {
-    public function calcular_multa($dias_atraso) {
-        return 0.50 * $dias_atraso;
+    public function calcularMulta(int $diasAtraso): float {
+        return $diasAtraso * 0.50;
     }
 }
 
-// Classe Revista que herda de ItemBiblioteca
+# Subclasse Revista
 class Revista extends ItemBiblioteca {
-    public function calcular_multa($dias_atraso) {
-        return 0.25 * $dias_atraso;
+    public function calcularMulta(int $diasAtraso): float {
+        return $diasAtraso * 0.25;
     }
 }
-
-// Classe Biblioteca para gerenciar os itens
 class Biblioteca {
-    private $itens = [];
+    private array $itens = [];
 
-    // Adiciona um item ao acervo da biblioteca
-    public function adicionar_item(ItemBiblioteca $item) {
-        $this->itens[$item->titulo()] = $item;
-        echo "Item '{$item->titulo()}' adicionado ao acervo.\n";
+    public function adicionarItem(ItemBiblioteca $item): void {
+        $this->itens[$item->getTitulo()] = $item;
+        echo "Item '{$item->getTitulo()}' adicionado ao acervo.<br>";
     }
 
-    // Empresta um item baseado no título
-    public function emprestar_item($titulo) {
+    public function emprestarItem(string $titulo): void {
         if (isset($this->itens[$titulo])) {
             $this->itens[$titulo]->emprestar();
         } else {
-            echo "Item '{$titulo}' não encontrado no acervo.\n";
+            echo "Item '{$titulo}' não encontrado no acervo.<br>";
         }
     }
 
-    // Devolve um item baseado no título
-    public function devolver_item($titulo) {
+    public function devolverItem(string $titulo): void {
         if (isset($this->itens[$titulo])) {
             $this->itens[$titulo]->devolver();
         } else {
-            echo "Item '{$titulo}' não encontrado no acervo.\n";
+            echo "Item '{$titulo}' não encontrado no acervo.<br>";
         }
     }
 }
 
-// Teste do sistema
+# Testes e Simulação
+// Testes e Simulação
 $biblioteca = new Biblioteca();
 
-// Criação de itens (Livro e Revista)
 $livro = new Livro("Python para Iniciantes", "L001");
 $revista = new Revista("TechNews", "R001");
 
-// Adicionando itens à biblioteca
-$biblioteca->adicionar_item($livro);
-$biblioteca->adicionar_item($revista);
+$biblioteca->adicionarItem($livro);
+$biblioteca->adicionarItem($revista);
 
-// Realizando o empréstimo dos itens
-$biblioteca->emprestar_item("Python para Iniciantes");
-$biblioteca->emprestar_item("TechNews");
+echo "<br>";
+$biblioteca->emprestarItem("Python para Iniciantes");
+$biblioteca->emprestarItem("TechNews");
 
-// Devolvendo o livro
-$biblioteca->devolver_item("Python para Iniciantes");
+echo "<br>";
+$biblioteca->devolverItem("Python para Iniciantes");
 
-// Calculando e exibindo as multas
-$dias_atraso = 5;
-echo "\nMulta do livro (5 dias): R$" . number_format($livro->calcular_multa($dias_atraso), 2, ',', '.') . "\n";
-echo "Multa da revista (5 dias): R$" . number_format($revista->calcular_multa($dias_atraso), 2, ',', '.') . "\n";
+echo "<br>";
+echo "Multa do livro (5 dias): R$" . number_format($livro->calcularMulta(5), 2, ',', '.') . "<br>";
+echo "Multa da revista (5 dias): R$" . number_format($revista->calcularMulta(5), 2, ',', '.') . "<br>";
 
+                                
 ?>
